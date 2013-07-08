@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef void (^DAKeyboardDidMoveBlock)(CGRect keyboardFrameInView);
+typedef void (^DAKeyboardWillRecedeBlock)(CGRect keyboardFrameInView);
 
 /** DAKeyboardControl allows you to easily add keyboard awareness and scrolling
  dismissal (a receding keyboard ala iMessages app) to any UIView, UIScrollView
@@ -39,6 +40,12 @@ typedef void (^DAKeyboardDidMoveBlock)(CGRect keyboardFrameInView);
  @see removeKeyboardControl
  */
 - (void)addKeyboardNonpanningWithActionHandler:(DAKeyboardDidMoveBlock)didMoveBlock;
+
+/** Adding keyboard-will-start-recede-animationg awareness
+ @param willRecedeBlock called when DAKeyboardControl decides that keyboard needs to
+  start recede animation.
+ */
+- (void)addKeyboardRecedingWithActionHandler:(DAKeyboardWillRecedeBlock)willRecedeBlock;
 
 /** Remove the keyboard action handler
  @note You MUST call this method to remove the keyboard handler before the view
