@@ -209,6 +209,35 @@ static char UIViewIsPanning;
   }
 }
 
+- (void)dismissKeyboard {
+  
+  CGFloat keyboardWindowHeight = self.keyboardActiveView.window.bounds.size.height;
+  
+  self.previousKeyboardRect = self.keyboardActiveView.frame;
+  
+  // If the keyboard has only been pushed down 44 pixels or has been
+  // panned upwards let it pop back up; otherwise, let it drop down
+  CGRect newKeyboardViewFrame = self.keyboardActiveView.frame;
+  newKeyboardViewFrame.origin.y = keyboardWindowHeight;
+  
+  // JM: If an actionHandler was supplied, then run it.
+  if (self.keyboardWillRecedeBlock) {
+    self.keyboardWillRecedeBlock(self.keyboardActiveView.frame);
+  }
+  
+  [UIView animateWithDuration:0.25f
+                        delay:0.0f
+                      options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionBeginFromCurrentState
+                   animations:^{
+                     [self.keyboardActiveView setFrame:newKeyboardViewFrame];
+                   }
+                   completion:^(__unused BOOL finished){
+                     [[self keyboardActiveView] setUserInteractionEnabled:NO];
+                     [self hideKeyboard];
+                   }];
+}
+
+
 #pragma mark - Input Notifications
 
 - (void)responderDidBecomeActive:(NSNotification *)notification
@@ -504,6 +533,7 @@ static char UIViewIsPanning;
       break;
   }
 }
+
 
 #pragma mark - Internal Methods
 

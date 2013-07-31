@@ -59,5 +59,8 @@ typedef void (^DAKeyboardWillRecedeBlock)(CGRect keyboardFrameInView);
 /** Convenience method to dismiss the keyboard */
 - (void)hideKeyboard;
 
+// JM
+- (void)dismissKeyboard;
+
 @end
 
