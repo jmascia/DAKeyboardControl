@@ -94,47 +94,55 @@ static char UIViewIsPanning;
 
 - (void)addKeyboardControl:(BOOL)panning actionHandler:(DAKeyboardDidMoveBlock)actionHandler
 {
-  self.panning = panning;
-  self.keyboardDidMoveBlock = actionHandler;
-  
-  // Register for text input notifications
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(responderDidBecomeActive:)
-                                               name:UITextFieldTextDidBeginEditingNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(responderDidBecomeActive:)
-                                               name:UITextViewTextDidBeginEditingNotification
-                                             object:nil];
-  
-  // Register for keyboard notifications
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardWillShow:)
-                                               name:UIKeyboardWillShowNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardDidShow)
-                                               name:UIKeyboardDidShowNotification
-                                             object:nil];
-  
-  // For the sake of 4.X compatibility
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardWillChangeFrame:)
-                                               name:@"UIKeyboardWillChangeFrameNotification"
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardDidChangeFrame)
-                                               name:@"UIKeyboardDidChangeFrameNotification"
-                                             object:nil];
-  
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardWillHide:)
-                                               name:UIKeyboardWillHideNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(inputKeyboardDidHide)
-                                               name:UIKeyboardDidHideNotification
-                                             object:nil];
+#if (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0)
+    if (panning && [self respondsToSelector:@selector(setKeyboardDismissMode:)]) {
+        [(UIScrollView *)self setKeyboardDismissMode:UIScrollViewKeyboardDismissModeInteractive];
+    } else {
+        self.panning = panning;
+    }
+#else
+    self.panning = panning;
+#endif
+    self.keyboardDidMoveBlock = actionHandler;
+    
+    // Register for text input notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(responderDidBecomeActive:)
+                                                 name:UITextFieldTextDidBeginEditingNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(responderDidBecomeActive:)
+                                                 name:UITextViewTextDidBeginEditingNotification
+                                               object:nil];
+    
+    // Register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardDidShow)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    
+    // For the sake of 4.X compatibility
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardWillChangeFrame:)
+                                                 name:@"UIKeyboardWillChangeFrameNotification"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardDidChangeFrame)
+                                                 name:@"UIKeyboardDidChangeFrameNotification"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(inputKeyboardDidHide)
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
 }
 
 - (CGRect)keyboardFrameInView
