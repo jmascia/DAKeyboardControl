@@ -27,7 +27,9 @@ static inline UIViewAnimationOptions AnimationOptionsForCurve(UIViewAnimationCur
 			break;
 			
 		default:
-			return UIViewAnimationOptionCurveEaseInOut;
+      // JM: Temporary fix because the keyboard curve was changed in iOS 7 and there
+      // is not a documented constant for it yet.
+			return (curve << 16);
 			break;
 	}
 }
